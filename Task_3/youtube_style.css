@@ -1,0 +1,65 @@
+body {
+	font-family: Lucida, Arial, Helvetica;
+	background-color: lightgrey;
+	padding: 0;
+	margin: 0;
+	overflow-x:hidden; 
+	
+}
+
+header {
+	height: 130px;
+	width: 100%;
+}
+
+header div {
+	float: left;
+}
+
+.search {
+	padding-left: 33%;
+	padding-top: 50px;
+
+}
+
+
+.items {
+	width: 500%;
+	height: 600px;
+	background-color: darkgray;
+}
+
+.video {
+	background-color: white;
+	width: 4.9%;
+	float: left;
+	height: 600px;
+	padding-left: 0.05%;
+	padding-right: 0.05%;
+}
+
+.youtubeLink {
+	height: 70px;
+	text-align: center;
+	overflow: hidden;
+	padding-top: 5px;
+}	
+
+.thumbnail {
+	text-align: center;
+	height: 150px;
+	width: 95%;
+}
+
+
+.author, .viewCount, .description, .publishDate, .youtubeLink  {
+	padding-left: 5%;
+	padding-right: 5%;
+	vertical-align: middle;
+}
+
+
+footer {
+	height: 50px;
+	padding-top: 50px;
+}
