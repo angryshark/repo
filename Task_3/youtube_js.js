@@ -10,28 +10,35 @@ function doSearch() {
 	if (inputString.value === '') {
 		return;
 	}
-	var clipList = getResponse(inputString.value);
-	for (var i = 0; i < 20; ++i) {
-		var newDiv = document.createElement('div');
-		newDiv.className = 'v' + (i+1) + ' ' + 'video';
-		newDiv.innerHTML = '<div class='+'youtubeLink'+'><a href='+clipList[i].youtubeLink+'>'+clipList[i].title+'</a></div>'+
+	getResponse(inputString.value);
+}
+
+
+function getResponse(searchString) {
+    var url = 'https://gdata.youtube.com/feeds/api/videos/?&v=2&alt=json&max-results=20&start-index=1&q=' + searchString;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var clipList = convertYouTubeResponseToClipList(JSON.parse(xhr.responseText));
+            doInnerContent(clipList);
+        }
+    }
+    xhr.open("GET", url, true);
+    xhr.send(null);
+}
+
+function doInnerContent (clipList) {
+    for (var i = 0; i < 20; ++i) {
+        var newDiv = document.createElement('div');
+        newDiv.className = 'v' + (i+1) + ' ' + 'video';
+        newDiv.innerHTML = '<div class='+'youtubeLink'+'><a href='+clipList[i].youtubeLink+'>'+clipList[i].title+'</a></div>'+
                          '<div class='+'thumbnail'+' style='+'background-image:url('+clipList[i].thumbnail+')></div>'+
                          '<div class='+'author'+'>'+'<p>'+'<b>Author: </b>'+clipList[i].author+'</p>'+'</div>'+
                          '<div class='+'description'+'>'+'<p>'+'<b>Description: </b>'+clipList[i].description+'</p>'+'</div>'+
                          '<div class='+'publishDate'+'>'+'<p>'+'<b>Publication date: </b>'+clipList[i].publishDate+'</p>'+'</div>'+
                          '<div class='+'viewCount'+'>'+'<p>'+'<b>View count: </b>'+clipList[i].viewCount+'</p>'+'</div>';                         
-		items.appendChild(newDiv);
-	}
-}
-
-
-function getResponse(searchString) {
-    var xml = new XMLHttpRequest();
-    var url = 'http://gdata.youtube.com/feeds/api/videos/?&v=2&alt=json&max-results=20&start-index=1&q=' + searchString;
-    xml.open("GET", url, false);
-    xml.send(null);
-    var clipList = convertYouTubeResponseToClipList(JSON.parse(xml.responseText));
-    return clipList;
+        items.appendChild(newDiv);
+    }
 }
 
 function convertYouTubeResponseToClipList(rawYouTubeData) {
