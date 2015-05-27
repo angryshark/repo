@@ -1,24 +1,29 @@
+'use strict'
 var items = document.querySelector('.items');
 var clickSearch = document.querySelector('.submitSearch');
+
 clickSearch.onclick = function() {
 	doSearch();
 }
 
 function doSearch() {
-	items.innerHTML = '';
 	var inputString = document.querySelector('input');
+
+    items.innerHTML = '';
 	if (inputString.value === '') {
 		return;
-	}
-	getResponse(inputString.value);
+	} else {
+        getResponse(inputString.value);
+    }
 }
 
 
 function getResponse(searchString) {
-    var url = 'https://gdata.youtube.com/feeds/api/videos/?&v=2&alt=json&max-results=20&start-index=1&q=' + searchString;
+    var APIkey = 'AIzaSyBtEdPEv4Diqrkyg9mRT2M-KjLfu_0qjCk';
+    var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + searchString + '&maxResults=20&key=' + APIkey;
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
             var clipList = convertYouTubeResponseToClipList(JSON.parse(xhr.responseText));
             doInnerContent(clipList);
         }
@@ -35,34 +40,30 @@ function doInnerContent (clipList) {
                          '<div class='+'thumbnail'+' style='+'background-image:url('+clipList[i].thumbnail+')></div>'+
                          '<div class='+'author'+'>'+'<p>'+'<b>Author: </b>'+clipList[i].author+'</p>'+'</div>'+
                          '<div class='+'description'+'>'+'<p>'+'<b>Description: </b>'+clipList[i].description+'</p>'+'</div>'+
-                         '<div class='+'publishDate'+'>'+'<p>'+'<b>Publication date: </b>'+clipList[i].publishDate+'</p>'+'</div>'+
-                         '<div class='+'viewCount'+'>'+'<p>'+'<b>View count: </b>'+clipList[i].viewCount+'</p>'+'</div>';                         
+                         '<div class='+'publishDate'+'>'+'<p>'+'<b>Publication date: </b>'+clipList[i].publishDate+'</p>'+'</div>';                   
         items.appendChild(newDiv);
     }
 }
 
 function convertYouTubeResponseToClipList(rawYouTubeData) {
 	var clipList = [];
-    var entries = rawYouTubeData.feed.entry;
-    if (entries) {
-    	for (var i = 0, l = entries.length; i < l; i++) {
-    		var entry = entries[i];
-    		var date = new Date(Date.parse(entry.updated.$t));
-            var shortId = entry.id.$t.match(/video:.*/).toString().split(":")[1];
-           	clipList.push({
-           		id: shortId,
-                youtubeLink: "http://www.youtube.com/watch?v=" + shortId,
-                title: entry.title.$t,
-                thumbnail: entry.media$group.media$thumbnail[1].url,
-                description: entry.media$group.media$description.$t,
-                author: entry.author[0].name.$t,
-                publishDate: date.toUTCString(),
-                viewCount: entry.yt$statistics.viewCount
-            });
-        }
+    var items = rawYouTubeData.items;
+    for (var i = 0; i < items.length; i++) {
+    	var date = new Date(Date.parse(items[i].snippet.publishedAt));
+        var shortId = items[i].id.videoId;
+        clipList.push({
+           	 id: shortId,    
+             youtubeLink: "http://www.youtube.com/watch?v=" + shortId,
+             title: items[i].snippet.title,
+             thumbnail: items[i].snippet.thumbnails.medium.url,
+             description: items[i].snippet.description,
+             author: items[i].snippet.channelTitle,
+             publishDate: date.toUTCString()
+        });
     }
    	return clipList;
 }
+
 /*for slide items*/
 var previousDiffX = 0;
 var diffX;
