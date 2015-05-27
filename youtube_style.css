@@ -8,7 +8,7 @@ body {
 	font-size: 2em;
 	min-width: 550px;
 	height: 100%;
-	background-color: lightgray;
+	background-color: oldlace;
 }
 
 header {
@@ -21,31 +21,45 @@ header {
 }
 
 #logo {
-	width: 160px;
+	width: 15%;
+	min-width: 130px;
+	height: 100%;
 	position: relative;
 	float: left;
 }
 
 form {
 	position: relative;
-	margin-top: 10px;
-	width: 0%;
-	min-width: 60px;
-	height: 60px;
-	overflow: hidden;
+	width: 85%;
+	height: 100%;
+	left: 20%;
 }
 
-.inputForSearch {
-	height: 25px;
-	width: 35%;
-	margin-top: 7px;
-	float: left;
+@media all and (max-width: 500px) {
+	form {left: 0;}
+}
 
+.inputSearch {
+	font-size: 20px;
+	height: 36px;
+	width: 35%;
+	min-width: 200px;
+	float: left;
+	padding: 0;
+	margin-top: 30px;
+}
+
+@media (max-width: 750px) {
+	.inputSearch {
+		font-size: 15px;
+	}
 }
 
 .submitSearch {
-	height: 31px;
-	width: 50px;
-	margin: 0;
-	padding: 0;
+	height: 40px;
+	width: 40px;
+	margin-top: 30px;
+	background-image: url(search.png);
+	background-repeat: no-repeat;
+	background-position: center;
 }
