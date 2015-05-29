@@ -71,3 +71,52 @@ function convertYouTubeResponseToClipList(rawYouTubeData) {
     }
    	return clipList;
 }
+
+/*slide videoItems*/
+var previousDiffX = 0;
+var diffX;
+var dragX;
+var startX;
+var currentPage = 1;
+
+videoItems.addEventListener('mousedown',dragStart);
+videoItems.addEventListener('mouseup',dragEnd);   
+
+function dragStart(e){
+    console.log('dragStart');
+    this.style.transition="all 0.0s ease-in-out"
+    startX = e.clientX;
+    videoItems.addEventListener('mousemove',drag);
+}
+
+function drag(e){
+    dragX = e.clientX;
+    diffX = dragX - startX;
+    videoItems.style.webkitTransform="translateX("+(diffX + previousDiffX)+"px)";
+}
+
+function dragEnd(e){
+        console.log('dragEnd');
+    videoItems.removeEventListener('mousemove',drag);   
+    videoItems.style.transition = "all 0.5s ease-in-out 0s";
+
+    if (Math.abs(diffX) < 100) {
+        videoItems.style.webkitTransform = "translateX("+previousDiffX+"px)";
+    }
+
+    if (diffX < -100) {
+        if (currentPage !== 5) {
+            previousDiffX = previousDiffX - document.body.offsetWidth;
+            this.style.webkitTransform = "translateX(" + previousDiffX + "px)"; 
+            currentPage = currentPage + 1;
+        } else  videoItems.style.webkitTransform = "translateX("+previousDiffX+"px)";    
+    }
+
+    if (diffX > 100) {
+        if(currentPage !== 1) {
+            previousDiffX = previousDiffX + document.body.offsetWidth;
+            this.style.webkitTransform = "translateX("+previousDiffX+"px)";
+            currentPage = currentPage - 1;
+        } else videoItems.style.webkitTransform = "translateX("+previousDiffX+"px)";
+    }
+}
