@@ -7,7 +7,7 @@ body {
 	font-family: Georgia,Times, serif;
 	font-size: 1em;
 	height: 100%;
-	background-color: oldlace;
+	background-color: blanchedalmond;
 	overflow-x: hidden; 
 }
 
@@ -45,14 +45,14 @@ header {
 }
 
 .videoItems {
-	height: 400px;
+	height: 450px;
 	width: 10000%;
 }
 
 .loadBlock {
 	float: left;
 	width: 5%;
-	height: 400px;
+	height: 450px;
 }
 
 .video {
@@ -87,6 +87,10 @@ header {
 
  .publishDate {
  	height: 36px;
+}
+
+.countOfViews {
+	height: 20px;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
