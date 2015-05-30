@@ -45,14 +45,24 @@ header {
 }
 
 .videoItems {
-	width: 500%;
+	height: 400px;
+	width: 10000%;
+}
+
+.loadBlock {
+	float: left;
+	width: 5%;
+	height: 400px;
 }
 
 .video {
-	width: 4.9%;
 	float: left;
-	padding-right: 0.05%;
-	padding-left: 0.05%;
+	width: 4.8%;
+    padding-left: 0.1%;
+    padding-right: 0.1%;
+	background-clip: content-box;
+	border-radius: 10px;
+	background-color: white;
 }
 
 .youtubeLink {
