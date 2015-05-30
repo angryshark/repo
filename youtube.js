@@ -19,8 +19,9 @@ function enterDown(e) {
 }
 
 function doSearch() {
-    pageToken = ''
     videoItems.innerHTML = '';
+    pageToken = ''
+    dotsToStart();
 	if (inputString.value === '') {
 		return;
 	} else {
@@ -115,12 +116,12 @@ function convertYouTubeResponseToClipList(rawYouTubeData) {
 }
 
 /*slide videoItems*/
-var previousDiffX = 0;
+var previousDiffX;
 var diffX;
 var dragX;
 var startX;
-var currentPage = 1;
-var numOfPageLoaded = 5;
+var currentPage;
+var numOfPageLoaded;
 
 videoItems.addEventListener('mousedown',dragStart);
 videoItems.addEventListener('mouseup',dragEnd);   
@@ -140,7 +141,7 @@ function drag(e){
 function dragEnd(e){
     videoItems.removeEventListener('mousemove',drag);   
     videoItems.style.transition = "all 0.5s ease-in-out 0s";
-    if (currentPage === numOfPageLoaded) {
+    if (currentPage === numOfPageLoaded && currentPage !== 100) {
         numOfPageLoaded = numOfPageLoaded + 5;
         loadPages();
     }
@@ -150,11 +151,13 @@ function dragEnd(e){
     }
 
     if (diffX < -100) {
-        previousDiffX = previousDiffX - document.body.offsetWidth;
-        this.style.webkitTransform = "translateX(" + previousDiffX + "px)"; 
-        currentPage = currentPage + 1;
-        changeDotWithSliding();
-    } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+        if (currentPage !== 100) {
+            previousDiffX = previousDiffX - document.body.offsetWidth;
+            this.style.webkitTransform = "translateX(" + previousDiffX + "px)"; 
+            currentPage = currentPage + 1;
+            changeDotWithSliding();
+        } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+    } 
 
     if (diffX > 100) {
         if (currentPage !== 1) {
@@ -164,6 +167,25 @@ function dragEnd(e){
             changeDotWithSliding();
         } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
     }
+}
+
+function dotsToStart () {
+    currentPage = 1;
+    previousDiffX = 0;
+    numOfPageLoaded = 5;
+    videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+    innerDots();
+    changeDotWithSliding();
+}
+
+function innerDots () {
+    var dots = document.querySelector('.dots');
+    dots.innerHTML = '<ul><li class=current><div class=tooltip>1</div><a></a></li>'+
+                     '<li><div class=tooltip>2</div><a></a></li>'+
+                     '<li><div class=tooltip>3</div><a></a></li>'+
+                     '<li><div class=tooltip>4</div><a></a></li>'+
+                     '<li><div class=tooltip>5</div><a></a></li><li></li></ul>';
+    onClickDots ();
 }
 
 function changeDotWithSliding () {
@@ -177,19 +199,18 @@ function changeDotWithSliding () {
     
     var arrTooltips = document.querySelectorAll ('.tooltip');
     var tooltipPage = (Math.floor((currentPage - 1)  / 5) + 1) * 5;
-    console.log(tooltipPage);
     for (var i = arrDots.length - 2; i !== -1; --i) {
         arrTooltips[i].innerHTML = tooltipPage;
         --tooltipPage;
     }
 }
 
-(function onClickDots () {
+function onClickDots () {
     var arrDots = document.querySelectorAll('li');
     for (var i = 0; i < arrDots.length - 1; ++i) {
         arrDots[i].onclick = onclickEvent;
     }
-}());
+};
 
 function culcPrevCurrentDot () {
     var arrDots = document.querySelectorAll('li');
