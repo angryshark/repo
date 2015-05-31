@@ -20,16 +20,24 @@ function enterDown(e) {
 }
 
 function doSearch() {
+    removeChilds(document.querySelector('.dots'));
     videoItems.innerHTML = '';
     pageToken = ''
-    dotsToStart();
-    videoItems.addEventListener('mousedown',dragStart);
-    videoItems.addEventListener('mouseup',dragEnd);   
+
 	if (inputString.value === '') {
 		return;
 	} else {
+        dotsToStart();
+        videoItems.addEventListener('mousedown',dragStart);
+        videoItems.addEventListener('mouseup',dragEnd);  
         searchString = inputString.value;
         getResponse(searchString, pageToken);
+    }
+}
+
+function removeChilds (node) {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
     }
 }
 
@@ -116,13 +124,13 @@ function convertYouTubeResponseToClipList(rawYouTubeData) {
    	return clipList;
 }
 
-/*slide videoItems*/
 var previousDiffX;
 var diffX;
 var dragX;
 var startX;
 var currentPage;
 var numOfPageLoaded;
+var primaryWidthStage = document.body.offsetWidth;
 
 function dragStart(e){
     videoItems.style.transition = "all 0.0s ease-in-out"
@@ -139,7 +147,15 @@ function drag(e){
 function dragEnd(e){
     videoItems.removeEventListener('mousemove',drag);   
     videoItems.style.transition = "all 0.5s ease-in-out 0s";
-    if (currentPage === numOfPageLoaded && currentPage !== 100) {
+
+    var endOfVideos = 100;
+    if (getTypeResolution(document.body.offsetWidth) === 2) {
+        endOfVideos = endOfVideos * 2;
+    } else if (getTypeResolution(document.body.offsetWidth) === 1) {
+        endOfVideos = endOfVideos * 4;
+    }
+
+    if (currentPage === numOfPageLoaded && currentPage !== endOfVideos) {
         numOfPageLoaded = numOfPageLoaded + 5;
         loadPages();
     }
@@ -149,12 +165,14 @@ function dragEnd(e){
     }
 
     if (diffX < -100) {
-        if (currentPage !== 100) {
+        if (currentPage !== endOfVideos) {
             previousDiffX = previousDiffX - document.body.offsetWidth;
             videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)"; 
             currentPage = currentPage + 1;
-            changeDotWithSliding();
-        } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+        } else {
+            videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+        
+        }
     } 
 
     if (diffX > 100) {
@@ -162,18 +180,20 @@ function dragEnd(e){
             previousDiffX = previousDiffX + document.body.offsetWidth;
             videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
             currentPage = currentPage - 1;
-            changeDotWithSliding();
-        } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+        } else {
+            videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+        } 
     }
+    changeDotWithSliding();
 }
 
 function dotsToStart () {
     currentPage = 1;
     previousDiffX = 0;
     numOfPageLoaded = 5;
+    primaryWidthStage = document.body.offsetWidth;
     videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
     innerDots();
-    changeDotWithSliding();
 }
 
 function innerDots () {
@@ -184,6 +204,7 @@ function innerDots () {
                      '<li><div class=tooltip>4</div><a></a></li>'+
                      '<li><div class=tooltip>5</div><a></a></li><li><div class=tooltip></div></li></ul>';
     onClickDots ();
+    changeDotWithSliding();
 }
 
 function changeDotWithSliding () {
@@ -240,5 +261,38 @@ function onclickDotsEvent (e) {
             }
         }
     }
+    changeDotWithSliding ();
+}
 
+window.onresize = function() {
+    var currentResolutionType = getTypeResolution(primaryWidthStage);
+    var newResolutionType = getTypeResolution(document.body.offsetWidth);
+    videoItems.style.transition = "all 0.2s ease-in-out 0s";
+
+    var deltaDisplayTypes = Math.abs(currentResolutionType - newResolutionType);
+    if ( deltaDisplayTypes !== 0) {
+        if (currentResolutionType > newResolutionType) {
+            currentPage = ((currentPage - 1) * deltaDisplayTypes * 2) + 1;
+
+        } else {
+            currentPage = Math.floor((currentPage + (deltaDisplayTypes * 2) - 1)  / (deltaDisplayTypes * 2));
+        }
+    }
+    previousDiffX = -(currentPage - 1) * document.body.offsetWidth;
+    console.log(previousDiffX);
+    videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+    changeDotWithSliding();
+    primaryWidthStage = document.body.offsetWidth;
+};
+
+function getTypeResolution (resolution) {
+    if (resolution > 0 && resolution <= 480) {
+       return 1;
+    }
+    if (resolution > 480 && resolution <= 999) {
+        return 2;    
+    }
+    if (resolution > 999) {
+        return 3;    
+    }
 }
