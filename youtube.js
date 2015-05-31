@@ -1,4 +1,3 @@
-'use strict'
 var videoItems = document.querySelector('.videoItems');
 var clickSearch = document.querySelector('.submitSearch');
 var inputString = document.querySelector('.inputSearch');
@@ -279,7 +278,6 @@ window.onresize = function() {
         }
     }
     previousDiffX = -(currentPage - 1) * document.body.offsetWidth;
-    console.log(previousDiffX);
     videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
     changeDotWithSliding();
     primaryWidthStage = document.body.offsetWidth;
