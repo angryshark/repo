@@ -10,6 +10,7 @@ clickSearch.onclick = function() {
 }
 
 inputString.onkeydown = enterDown;
+inputString.focus();
 
 function enterDown(e) {
     e = e || window.event;
@@ -22,6 +23,8 @@ function doSearch() {
     videoItems.innerHTML = '';
     pageToken = ''
     dotsToStart();
+    videoItems.addEventListener('mousedown',dragStart);
+    videoItems.addEventListener('mouseup',dragEnd);   
 	if (inputString.value === '') {
 		return;
 	} else {
@@ -93,8 +96,6 @@ function loadCountOfViews (videosId) {
     xhr.send(null);
 }
 
-//'+'<p>'+'<b>Views: </b><br>'+clipList[i].publishDate+'</p>'+'
-
 function convertYouTubeResponseToClipList(rawYouTubeData) {
 	var clipList = [];
     var items = rawYouTubeData.items;
@@ -123,11 +124,8 @@ var startX;
 var currentPage;
 var numOfPageLoaded;
 
-videoItems.addEventListener('mousedown',dragStart);
-videoItems.addEventListener('mouseup',dragEnd);   
-
 function dragStart(e){
-    this.style.transition = "all 0.0s ease-in-out"
+    videoItems.style.transition = "all 0.0s ease-in-out"
     startX = e.clientX;
     videoItems.addEventListener('mousemove',drag);
 }
@@ -153,7 +151,7 @@ function dragEnd(e){
     if (diffX < -100) {
         if (currentPage !== 100) {
             previousDiffX = previousDiffX - document.body.offsetWidth;
-            this.style.webkitTransform = "translateX(" + previousDiffX + "px)"; 
+            videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)"; 
             currentPage = currentPage + 1;
             changeDotWithSliding();
         } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
@@ -162,7 +160,7 @@ function dragEnd(e){
     if (diffX > 100) {
         if (currentPage !== 1) {
             previousDiffX = previousDiffX + document.body.offsetWidth;
-            this.style.webkitTransform = "translateX(" + previousDiffX + "px)";
+            videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
             currentPage = currentPage - 1;
             changeDotWithSliding();
         } else videoItems.style.webkitTransform = "translateX(" + previousDiffX + "px)";
@@ -184,7 +182,7 @@ function innerDots () {
                      '<li><div class=tooltip>2</div><a></a></li>'+
                      '<li><div class=tooltip>3</div><a></a></li>'+
                      '<li><div class=tooltip>4</div><a></a></li>'+
-                     '<li><div class=tooltip>5</div><a></a></li><li></li></ul>';
+                     '<li><div class=tooltip>5</div><a></a></li><li><div class=tooltip></div></li></ul>';
     onClickDots ();
 }
 
@@ -203,12 +201,13 @@ function changeDotWithSliding () {
         arrTooltips[i].innerHTML = tooltipPage;
         --tooltipPage;
     }
+    arrTooltips[arrDots.length - 1].innerHTML = document.querySelector('.current .tooltip').innerHTML;
 }
 
 function onClickDots () {
     var arrDots = document.querySelectorAll('li');
     for (var i = 0; i < arrDots.length - 1; ++i) {
-        arrDots[i].onclick = onclickEvent;
+        arrDots[i].onclick = onclickDotsEvent;
     }
 };
 
@@ -223,7 +222,7 @@ function culcPrevCurrentDot () {
     return prevCurrentDot;    
 }
 
-function onclickEvent (e) {
+function onclickDotsEvent (e) {
     var prevCurrentDot = culcPrevCurrentDot();
     this.className = 'current';
     var arrDots = document.querySelectorAll('li');

@@ -59,7 +59,7 @@
 	width: 18px;
 	height: 18px;
 	border-radius: 50%;
-	background: black;
+	background: #333333;
 	-webkit-transform: translateX(-50%);
 	transform: translateX(-50%);
 }
@@ -105,7 +105,7 @@
 	background-color: #fff;
 }
 
-.tooltip { /* hide and position tooltip */
+.tooltip {
   top:-30px;
   width: 30px;
   height: 30px;
@@ -123,6 +123,6 @@
   transition: opacity 0.5s;
 }
 
-li:hover .tooltip { /* display tooltip on hover */
+li:hover .tooltip {
     opacity:1;
 }
